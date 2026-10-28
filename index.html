@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indian Political Accountability Archive: BJP, RSS & Congress Crimes, Crises & Judicial Dockets | By Amim Ahsan</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            charcoal: {
+              950: '#07090E',
+              900: '#0F141D',
+              800: '#1A2230'
+            },
+            crimson: {
+              600: '#DC2626',
+              700: '#B91C1C'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React & React DOM CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone -->
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-charcoal-950 text-slate-100 antialiased selection:bg-red-900 selection:text-white min-h-screen flex flex-col">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect } = React;
+
+    const Icon = ({ name, className = "w-4 h-4" }) => {
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      }, [name]);
+      return <i data-lucide={name} className={className}></i>;
+    };
+
+    // ==========================================
+    // SEED DATABASE: INDIAN POLITICAL ACCOUNTABILITY ARCHIVE
+    // ==========================================
+    const CRIME_RECORDS = [
+      {
+        id: "CRIME-MANIPUR-001",
+        title: "Manipur Ethnic Conflict & State-Backed Violence",
+        entity: "BJP / RSS Administration",
+        category: "Human Rights & Communal Violence",
+        date: "2023-05-03 to Present",
+        location: "Manipur, India",
+        description: "Sectarian clashes between Meitei and Kuki communities resulting in widespread arson, church burnings, sexual violence, and displacement under the watch of state and central BJP governments.",
+        casualties: "180+ Dead, 60,000+ Displaced, Thousands Injured",
+        economicLoss: "₹10,000+ Crore in destroyed property, homes, and infrastructure",
+        applicableLaws: "IPC Sections 302 (Murder), 376 (Rape), 153A (Promoting enmity between groups), Crimes Against Humanity under International Law",
+        notableVictims: "Kuki and Meitei civilians, victims of public stripping and assault",
+        sourceRef: "Supreme Court Monitoring Committee Reports, Editors Guild Fact Finding Report"
+      },
+      {
+        id: "CRIME-ECON-002",
+        title: "Electoral Bonds Scam & Crony Capitalism",
+        entity: "BJP Government",
+        category: "Economic Crime & Corruption",
+        date: "2018-2024 (Struck down by Supreme Court)",
+        location: "New Delhi / Nationwide",
+        description: "An anonymous political funding mechanism declared unconstitutional by the Supreme Court in Feb 2024. Shell companies and profiteering corporations funneled thousands of crores to the ruling party in exchange for government contracts and ED/CBI case closures.",
+        casualties: "Systemic economic distortion and public trust collapse",
+        economicLoss: "₹16,000+ Crore in verified opaque political funding",
+        applicableLaws: "Prevention of Corruption Act, Companies Act violations, Supreme Court Unconstitutional Verdict",
+        notableVictims: "Indian taxpayers and democratic transparency",
+        sourceRef: "Supreme Court of India Constitutional Bench Judgment (Feb 2024)"
+      },
+      {
+        id: "CRIME-KASHMIR-003",
+        title: "Jammu & Kashmir Article 370 Abrogation Crackdown & Detentions",
+        entity: "BJP / RSS Administration",
+        category: "Constitutional Crisis & Civil Liberties",
+        date: "2019-08-05 onwards",
+        location: "Jammu & Kashmir",
+        description: "Unilateral revocation of special autonomous status accompanied by total communication blackout, military lockdown, and arbitrary preventive detention of thousands of political leaders, journalists, and activists.",
+        casualties: "Hundreds of arbitrary detentions, severe economic strangulation",
+        economicLoss: "₹40,000+ Crore in tourism, horticulture, and internet shutdown losses",
+        applicableLaws: "Unlawful Activities Prevention Act (UAPA) misuse, Fourth Geneva Convention violations",
+        notableVictims: "Kashmiri civil society, detained Chief Ministers, silenced journalists",
+        sourceRef: "UN Human Rights Office Statements, Supreme Court Petitions Dockets"
+      },
+      {
+        id: "CRIME-CONG-004",
+        title: "1984 Anti-Sikh Pogroms",
+        entity: "Indian National Congress (INC)",
+        category: "Communal Violence & State Complicity",
+        date: "1984-10-31 to 1984-11-04",
+        location: "Delhi and North India",
+        description: "Organized violence directed against Sikhs in the aftermath of Prime Minister Indira Gandhi's assassination, with active complicity and leadership by Congress party politicians and police inaction.",
+        casualties: "3,000+ Sikhs killed across India",
+        economicLoss: "₹1,000+ Crore in destroyed properties, gurdwaras, and businesses",
+        applicableLaws: "IPC Sections 302, 147, 153A, Nanavati Commission Recommendations",
+        notableVictims: "Sikh men, women, and children burned or murdered",
+        sourceRef: "Nanavati Commission Report, Delhi High Court Verdicts"
+      },
+      {
+        id: "CRIME-BIHAR-005",
+        title: "Bihar Shelter Home Sexual Abuse Scandals (Muzaffarpur)",
+        entity: "NDA / State Coalition (JD(U)-BJP)",
+        category: "Women Discrimination & Child Abuse",
+        date: "2018",
+        location: "Muzaffarpur, Bihar",
+        description: "Systemic rape and physical torture of dozens of minor girls inside a state-funded shelter home run by an NGO connected to influential political figures and state ministers.",
+        casualties: "34 minor girls subjected to aggravated rape and torture",
+        economicLoss: "Misappropriation of state social welfare funds",
+        applicableLaws: "POCSO Act, IPC Section 376(D), CBI Investigation Dockets",
+        notableVictims: "Vulnerable shelter home minors",
+        sourceRef: "CBI Charge Sheet & Supreme Court Monitoring Orders"
+      },
+      {
+        id: "CRIME-FILM-006",
+        title: "Censorship, Propaganda Financing & Bollywood Coercion",
+        entity: "BJP / RSS Cultural Wings",
+        category: "Institutional & Cultural Corruption",
+        date: "2014–2026",
+        location: "Mumbai & Nationwide",
+        description: "Systemic pressure on the Indian film industry to produce state-aligned propaganda films, tax exemptions for specific ideological projects, and targeted ED/IT raids on dissenting artists and producers.",
+        casualties: "Freedom of artistic expression and cinematic integrity",
+        economicLoss: "Distortion of creative economy and box office manipulation",
+        applicableLaws: "Cinematograph Act, Misuse of Central Investigating Agencies",
+        notableVictims: "Independent filmmakers, screenwriters, and dissenting actors",
+        sourceRef: "Media Freedom Reports & Industry Transparency Dockets"
+      },
+      {
+        id: "CRIME-JUDICIARY-007",
+        title: "Judicial Capture & High Court/Supreme Court Executive Overreach",
+        entity: "Executive & Judicial Complicity",
+        category: "Judicial & Constitutional Crisis",
+        date: "2014–2026",
+        location: "New Delhi",
+        description: "Deliberate delays in hearing crucial constitutional challenges (Electoral Bonds, Pegasus, Citizenship Amendment Act, Article 370), post-retirement appointments of judges, and pressure on dissenting High Court transfers.",
+        casualties: "Collapse of judicial independence and citizen recourse",
+        economicLoss: "Incalculable democratic and systemic loss",
+        applicableLaws: "Constitution of India Basic Structure Doctrine Violations",
+        notableVictims: "Indian citizens denied timely constitutional justice",
+        sourceRef: "Bar Council Statements, Jurist Open Letters, Supreme Court Watch"
+      },
+      {
+        id: "CRIME-GLOBAL-008",
+        title: "Transnational Repression & Extrajudicial Assassination Allegations",
+        entity: "State Intelligence Apparatus",
+        category: "International Crime",
+        date: "2023–2024",
+        location: "Canada, USA, Pakistan",
+        description: "Allegations and indictments by Western intelligence agencies regarding state-directed extrajudicial killings and attempted assassinations of political dissidents on foreign soil.",
+        casualties: "Hardeep Singh Nijjar (Canada), targeted dissidents abroad",
+        economicLoss: "Severe diplomatic fallout and trade friction with G7 nations",
+        applicableLaws: "Vienna Convention, International Law on Sovereignty, Foreign Extradition Acts",
+        notableVictims: "Sikh separatists and foreign-residing political dissidents",
+        sourceRef: "Canadian Government Parliamentary Inquiries, US Department of Justice Indictment"
+      }
+    ];
+
+    function App() {
+      const [currentView, setCurrentView] = useState('home');
+      const [selectedCrime, setSelectedCrime] = useState(null);
+      const [searchTerm, setSearchTerm] = useState('');
+      const [selectedEntity, setSelectedEntity] = useState('All');
+
+      const filteredCrimes = useMemo(() => {
+        return CRIME_RECORDS.filter(item => {
+          const matchSearch = searchTerm === '' || 
+            item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.location.toLowerCase().includes(searchTerm.toLowerCase());
+          
+          const matchEntity = selectedEntity === 'All' || item.entity.includes(selectedEntity);
+          return matchSearch && matchEntity;
+        });
+      }, [searchTerm, selectedEntity]);
+
+      return (
+        <div className="min-h-screen bg-charcoal-950 text-slate-100 font-sans flex flex-col">
+          
+          {/* HEADER */}
+          <header className="sticky top-0 z-50 bg-charcoal-900/95 backdrop-blur border-b border-red-950/50 px-4 lg:px-8 py-3.5 shadow-xl">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+              
+              <button onClick={() => setCurrentView('home')} className="flex items-center gap-3 text-left group focus:outline-none">
+                <div className="bg-gradient-to-br from-red-700 to-red-950 p-2.5 rounded-xl text-white shadow-lg shadow-red-900/40">
+                  <Icon name="scale" className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-red-500 font-bold block">Independent Accountability Dossier</span>
+                  <h1 className="text-lg font-extrabold tracking-tight text-white group-hover:text-red-400 transition-colors">
+                    Indian Political Crimes & Crises Archive
+                  </h1>
+                </div>
+              </button>
+
+              <nav className="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 text-xs font-semibold">
+                {[
+                  { id: 'home', label: 'Overview' },
+                  { id: 'database', label: 'Crime & Crisis Database' },
+                  { id: 'bjp_rss', label: 'BJP & RSS Dockets' },
+                  { id: 'congress', label: 'Congress Dockets' },
+                  { id: 'economic', label: 'Economic & Global Crimes' },
+                  { id: 'laws', label: 'Applicable Laws' }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setCurrentView(tab.id)}
+                    className={`px-3 py-1.5 rounded-lg transition-all whitespace-nowrap ${currentView === tab.id ? 'bg-red-950/80 text-red-300 border border-red-700/60 shadow' : 'text-slate-300 hover:bg-charcoal-800 hover:text-white'}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
+
+              <div className="flex items-center gap-3">
+                <a 
+                  href="https://amimahsanlibrary.blogspot.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-lg bg-charcoal-800 border border-slate-700 hover:bg-charcoal-700 text-slate-200 text-xs font-bold transition-colors flex items-center gap-1.5"
+                >
+                  <Icon name="external-link" className="w-3.5 h-3.5" /> Amim Ahsan Blog
+                </a>
+              </div>
+
+            </div>
+          </header>
+
+          {/* MAIN CONTENT CONTAINER */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8 space-y-10">
+
+            {/* VIEW 1: HOME */}
+            {currentView === 'home' && (
+              <div className="space-y-10">
+                
+                {/* Hero Box */}
+                <div className="relative rounded-3xl bg-gradient-to-r from-charcoal-900 via-charcoal-900 to-red-950/40 p-8 md:p-14 border border-red-900/40 shadow-2xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl -z-0"></div>
+                  
+                  <div className="relative z-10 max-w-3xl space-y-6">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-800/60 inline-flex items-center gap-2">
+                      <Icon name="shield-alert" className="w-3.5 h-3.5" /> Comprehensive Non-Partisan Accountability Dossier
+                    </span>
+                    <h2 className="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                      Documenting Political Crimes, Corruption, Human Rights Violations & Institutional Failures in India.
+                    </h2>
+                    <p className="text-slate-300 text-base md:text-lg leading-relaxed">
+                      Covering BJP, RSS, Congress, and coalition administrations. Archiving communal violence, Manipur burnings, Kashmir crackdowns, economic scams, judicial compromises, women discrimination, and transnational crimes with applicable penal laws and verified casualty records.
+                    </p>
+
+                    <div className="pt-2 flex flex-wrap gap-4">
+                      <button onClick={() => setCurrentView('database')} className="px-6 py-3 bg-red-700 hover:bg-red-600 font-bold text-white text-sm rounded-xl shadow-lg shadow-red-700/30 transition-all flex items-center gap-2">
+                        Explore Crime Database <Icon name="arrow-right" className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => setCurrentView('bjp_rss')} className="px-6 py-3 bg-charcoal-900 hover:bg-charcoal-800 border border-red-900/50 font-bold text-red-300 text-sm rounded-xl transition-all">
+                        BJP & RSS Dockets
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Summary Categories */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="p-6 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-3">
+                    <h3 className="text-lg font-bold text-red-400 flex items-center gap-2">
+                      <Icon name="flame" className="w-5 h-5" /> Communal & Regional Crises
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Manipur ethnic conflict, 1984 anti-Sikh pogroms, Gujarat 2002 context, Kashmir communications blackout and military crackdown dockets.
+                    </p>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-3">
+                    <h3 className="text-lg font-bold text-amber-400 flex items-center gap-2">
+                      <Icon name="trending-down" className="w-5 h-5" /> Economic & Institutional Corruption
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Electoral bonds opacity, crony capitalism, banking non-performing assets, judicial appointments controversy, and film industry censorship.
+                    </p>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-3">
+                    <h3 className="text-lg font-bold text-indigo-400 flex items-center gap-2">
+                      <Icon name="scale" className="w-5 h-5" /> Applicable Laws & Punishments
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Mapping IPC/BNS criminal sections, Prevention of Corruption Act, POCSO, UAPA misuse, and international human rights jurisprudence.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* VIEW 2: DATABASE SEARCH & FILTER */}
+            {(currentView === 'database' || currentView === 'bjp_rss' || currentView === 'congress' || currentView === 'economic') && (
+              <div className="space-y-6">
+                <div className="border-b border-charcoal-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-extrabold text-white">
+                      {currentView === 'bjp_rss' ? 'BJP & RSS Accountability Records' :
+                       currentView === 'congress' ? 'Congress Party Accountability Records' :
+                       currentView === 'economic' ? 'Economic & Global Crime Dockets' : 'Complete Crime & Crisis Database'}
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-1">Search verified political crimes, casualties, economic losses, and applicable legal frameworks.</p>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Search crimes, locations, victims..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="bg-charcoal-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {filteredCrimes
+                    .filter(c => {
+                      if (currentView === 'bjp_rss') return c.entity.includes('BJP') || c.entity.includes('RSS') || c.entity.includes('NDA');
+                      if (currentView === 'congress') return c.entity.includes('Congress') || c.entity.includes('INC');
+                      if (currentView === 'economic') return c.category.includes('Economic') || c.category.includes('International');
+                      return true;
+                    })
+                    .map(crime => (
+                      <div key={crime.id} className="p-6 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-4 hover:border-red-900/60 transition-all">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-xs font-bold px-3 py-1 rounded bg-red-950 text-red-300 border border-red-800/50">
+                            {crime.entity}
+                          </span>
+                          <span className="text-xs text-slate-400 font-mono">{crime.date} • {crime.location}</span>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-white">{crime.title}</h3>
+                        <p className="text-xs text-slate-300 leading-relaxed">{crime.description}</p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                          <div className="p-3 rounded-xl bg-charcoal-950 border border-charcoal-800">
+                            <strong className="text-red-400 block mb-0.5">Casualties / Victims:</strong>
+                            <span className="text-slate-200">{crime.casualties}</span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-charcoal-950 border border-charcoal-800">
+                            <strong className="text-amber-400 block mb-0.5">Economic Loss:</strong>
+                            <span className="text-slate-200">{crime.economicLoss}</span>
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-charcoal-950 border border-red-950/50 text-xs text-slate-300">
+                          <strong className="text-red-300 block mb-0.5">Applicable Penal Law / Framework:</strong>
+                          {crime.applicableLaws}
+                        </div>
+
+                        <div className="pt-2 border-t border-charcoal-800 text-[11px] text-slate-400">
+                          <strong>Source References:</strong> {crime.sourceRef}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 3: APPLICABLE LAWS & LEGAL FRAMEWORK */}
+            {currentView === 'laws' && (
+              <div className="space-y-6">
+                <div className="border-b border-charcoal-800 pb-4">
+                  <h2 className="text-2xl font-extrabold text-white">Applicable Penal Laws & Judicial Frameworks</h2>
+                  <p className="text-xs text-slate-400 mt-1">Legal statutes governing political crimes, corruption, hate speech, and human rights violations in India.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-6 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-3">
+                    <h3 className="text-lg font-bold text-red-400">IPC / BNS Criminal Sections</h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      <strong>Section 302 / BNS 103:</strong> Punishment for murder.<br/>
+                      <strong>Section 376 / BNS 64:</strong> Punishment for rape and sexual assault.<br/>
+                      <strong>Section 153A:</strong> Promoting enmity between different groups on grounds of religion, race, place of birth, etc.
+                    </p>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-charcoal-900 border border-charcoal-800 space-y-3">
+                    <h3 className="text-lg font-bold text-amber-400">Anti-Corruption & Civil Rights Statutes</h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      <strong>Prevention of Corruption Act:</strong> Governing bribery, quid pro quo funding, and abuse of public office.<br/>
+                      <strong>POCSO Act:</strong> Protection of Children from Sexual Offences.<br/>
+                      <strong>UAPA:</strong> Unlawful Activities Prevention Act (frequently scrutinized for political dissent misuse).
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </main>
+
+          {/* FOOTER */}
+          <footer className="mt-auto border-t border-charcoal-800 bg-charcoal-900 py-8 px-4 text-xs text-slate-400 text-center space-y-2">
+            <div className="font-bold text-slate-200">Indian Political Accountability Archive</div>
+            <div>Independent documentation of political crimes and governance crises. Explore more at <a href="https://amimahsanlibrary.blogspot.com" target="_blank" rel="noopener noreferrer" className="text-red-400 underline">amimahsanlibrary.blogspot.com</a></div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
